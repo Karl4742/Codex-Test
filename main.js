@@ -11,6 +11,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 document.body.appendChild(renderer.domElement);
 
 const overlay = document.querySelector("#overlay");
+const statusText = document.querySelector("#status");
 
 const hemi = new THREE.HemisphereLight(0xffffff, 0x3d4b2f, 0.95);
 scene.add(hemi);
@@ -118,16 +119,49 @@ window.addEventListener("keyup", (event) => {
   }
 });
 
+function getPointerLockTarget() {
+  return renderer.domElement;
+}
+
+function updateOverlayState() {
+  const target = getPointerLockTarget();
+  const isLocked = document.pointerLockElement === target;
+  overlay.classList.toggle("hidden", isLocked);
+  if (isLocked && statusText) {
+    statusText.textContent = "";
+  }
+}
+
+function requestPointerLock() {
+  const target = getPointerLockTarget();
+  const request = target.requestPointerLock || target.mozRequestPointerLock || target.webkitRequestPointerLock;
+
+  if (!request) {
+    if (statusText) {
+      statusText.textContent = "Pointer lock is not supported in this browser.";
+    }
+    return;
+  }
+
+  request.call(target);
+}
+
 overlay.addEventListener("click", () => {
-  document.body.requestPointerLock();
+  if (statusText) {
+    statusText.textContent = "";
+  }
+  requestPointerLock();
 });
 
-document.addEventListener("pointerlockchange", () => {
-  overlay.classList.toggle("hidden", document.pointerLockElement === document.body);
+document.addEventListener("pointerlockchange", updateOverlayState);
+document.addEventListener("pointerlockerror", () => {
+  if (statusText) {
+    statusText.textContent = "Could not lock the mouse. Click again to retry.";
+  }
 });
 
 window.addEventListener("mousemove", (event) => {
-  if (document.pointerLockElement !== document.body) {
+  if (document.pointerLockElement !== getPointerLockTarget()) {
     return;
   }
 
@@ -219,4 +253,5 @@ function update() {
   requestAnimationFrame(update);
 }
 
+updateOverlayState();
 update();

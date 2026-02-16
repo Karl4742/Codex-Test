@@ -36,3 +36,10 @@ python3 -m http.server 8000
 ```
 
 Then open <http://localhost:8000> in your browser.
+
+
+## Troubleshooting
+
+- `GET /favicon.ico 404` is harmless and does not affect gameplay.
+- `ConnectionAbortedError [WinError 10053]` can happen when the browser tab closes while the local server is still sending data.
+- If you stay on the start overlay, click the game window again and allow mouse/pointer lock when prompted by your browser.

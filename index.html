@@ -39,6 +39,11 @@
         line-height: 1.5;
         padding: 1rem;
       }
+
+      #status {
+        min-height: 1.2rem;
+        color: #ffd8a8;
+      }
     </style>
   </head>
   <body>
@@ -47,6 +52,7 @@
         <h1>Basic First-Person Room</h1>
         <p>Click to lock the mouse and start.</p>
         <p><strong>WASD</strong>: Move &nbsp;|&nbsp; <strong>Mouse</strong>: Look &nbsp;|&nbsp; <strong>Space</strong>: Jump</p>
+        <p id="status" aria-live="polite"></p>
       </div>
     </div>
     <script type="module" src="main.js"></script>
